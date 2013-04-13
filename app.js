@@ -18,10 +18,10 @@ function init(){
 init();
 
 
-/* Mongo Initialization
+/* Mongo Setup Initialization
  * --------------------------------------------------------------------------*/
 
-/*var mongo = require('mongodb');
+var mongo = require('mongodb');
 var host = 'localhost';
 var port = mongo.Connection.DEFAULT_PORT;
 var optionsWithEnableWriteAccess={ w:1 };
@@ -31,21 +31,22 @@ var client = new mongo.Db(
     dbname,
     new mongo.Server(host,port),
     optionsWithEnableWriteAccess
-)*/
+)
 
-/*exports.g = {
-    "mongo" : mongo,
-    "host"  : host,
-    "port"  : port,
-    "optionsWithEnableWriteAccess" : optionsWithEnableWriteAccess,
-    "dbname": dbname,
-    "client" : client
-}*/
+/*Access these from other files using require("./app.js")*/
+exports.mongo = mongo;
+exports.host =  host;
+exports.port = port;
+exports.client = client;
+exports.dbname = dbname;
 
 
+
+/* User Authorization Initialization
+ * --------------------------------------------------------------------------*/
 mongoExpressAuth.init({
     mongo: { 
-        dbName: 'ramen',
+        dbName: dbname,
         collectionName: 'accounts'
     }
 }, function(){

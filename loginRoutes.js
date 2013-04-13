@@ -1,8 +1,8 @@
-//var g = require('./app.js');
+var g = require('./app.js');
+var mongoExpressAuth = require('mongo-express-auth');
 
 module.exports = function(app){
     app.get('/me', function(req, res){
-        //console.log(g);
         mongoExpressAuth.checkLogin(req, res, function(err){
             if (err)
                 res.send(err);
