@@ -1,4 +1,3 @@
-var g = require('./app.js');
 var mongoExpressAuth = require('mongo-express-auth');
 
 module.exports = function(app){
