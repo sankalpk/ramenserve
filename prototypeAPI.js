@@ -7,13 +7,16 @@ exports.init = function(done){
     initMongo(done);
 }
 
-exports.getAll = function(username, done){
-    g.prototypesCollection.find({ username: username }, { content: 1, _id: 1 }).toArray(done);
+//gets all the prototypes for the creator's _id
+exports.getAll = function(creator_id, done){
+    var query = { creator_id: creator_id };
+    g.prototypesCollection.find(query, {_id: 1, creator_id: 1, last_modified_date: 1, screens: 1}).toArray(done);
 }
 
+//gets a prototype by _id
 exports.get = function(_id, done){
     var query = { _id : new mongo.ObjectID(_id)};
-    g.prototypesCollection.findOne(query, { a: 1, b:1,c:1, _id: 1 }, done);
+    g.prototypesCollection.findOne(query, { _id: 1, creator_id:1, last_modified_date:1, screens: 1 }, done);
 }
 
 exports.create = function(username, content, done){
