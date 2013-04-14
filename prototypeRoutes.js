@@ -7,45 +7,49 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
         });
     });
 
-    // /* creator submits object to create one prototype */
-    // app.post('/prototypes', function(req, res){
-    //     mongoExpressAuth.checkLogin(req, res, function(err){
-    //         if (err)
-    //             res.send(err);
-    //         else {
-    //             mongoExpressAuth.getAccount(req, function(err, result){
-    //                 if (err)
-    //                     res.send(err);
-    //                 else
-    //                     res.send(result); // NOTE: direct access to the database is a bad idea in a real app
-    //             });
-    //         }
-    //     });
-    // });
-
-    /*publicly accessible prototype object */
+    /* publicly accessible prototype object */
     app.get('/prototypes/:_id', function(req, res){
         var _id = req.params._id;
         var username = mongoExpressAuth.getUsername(req);
         prototypeAPI.get(_id, makeSendResult(res));
     });
 
-    // /* creator deletes prototype object, note: creator must be logged in for this to occur */
-    // app.delete('/prototypes/:_id', function(req, res){
-    //     mongoExpressAuth.checkLogin(req, res, function(err){
-    //         if (err)
-    //             res.send(err);
-    //         else {
-    //             mongoExpressAuth.getAccount(req, function(err, result){
-    //                 if (err)
-    //                     res.send(err);
-    //                 else{
-    //                     res.send(result); // NOTE: direct access to the database is a bad idea in a real app
-    //             });
-    //         }
-    //     });
-    // }); 
+    /* creator deletes prototype object, note: creator must be 
+     * logged in for this to occur */
+    app.delete('/prototypes/:_id', function(req, res){
+        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
+            prototypeAPI.delete(accountInfo._id, req.params._id, makeSendResult(res))
+        });
+    }); 
 
+    /* CREATING A PROTOTYPE
+     * This section is split into many parts in line with the user flow */
+
+    /* Step 1
+     * Occurs once in the beginning
+     * creator submits {"name": "<appname>"}
+     * server returns {"_id": id, name: <appname>, "creator_id": <creator_id>, "screens":[empty array] } */
+    app.post('/prototypes/init', function(req, res){
+        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
+            prototypeAPI.create(accountInfo._id, req.body.name, makeSendResult(res));
+        });
+    });
+
+    /* Step 2
+     * Occurs variable number of times for each image upload, first image is start screen for the application
+     * creator submits { "screen_name": <name>, "image": <stringdata> }
+     * server returns { "screen_id": <screen_id> } */
+     app.put('/prototypes/:_id/image', function(req, res){
+
+     });
+
+    /* Step 3
+     * Occurs once for each screen in the application
+     * creator submits { "screen_id": <screen_id>, clickable_areas:[<array of clickable areas>] }
+     * clickableAreas are of the form {"x" : <x coord>, "y" : <y coord>, "width" : <width>, "height" : <height>, "destination_screen_id" : <screen_id>} */
+     app.put('/prototypes/:_id/clickables', function(req,res){
+
+     })
 }
 
 function makeSendResult(res){

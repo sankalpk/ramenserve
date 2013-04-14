@@ -10,7 +10,7 @@ exports.init = function(done){
 //gets all the prototypes for the creator's _id
 exports.getAll = function(creator_id, done){
     var query = { creator_id: creator_id };
-    g.prototypesCollection.find(query, {_id: 1, creator_id: 1, last_modified_date: 1, screens: 1}).toArray(done);
+    g.prototypesCollection.find(query, {_id: 1, creator_id: 1, screens: 1}).toArray(done);
 }
 
 //gets a prototype by _id
@@ -19,11 +19,12 @@ exports.get = function(_id, done){
     g.prototypesCollection.findOne(query, { _id: 1, creator_id:1, last_modified_date:1, screens: 1 }, done);
 }
 
-exports.create = function(username, content, done){
+exports.create = function(creator_id, name, done){
     g.prototypesCollection.insert(
         {    
-            username: username,
-            content: content
+            creator_id: new mongo.ObjectID(_id),
+            name: name,
+            screens: []
         },
         function(err, result){
             if (err)
@@ -34,30 +35,9 @@ exports.create = function(username, content, done){
     );
 }
 
-exports.update = function(username, _id, content, done){
-    g.prototypesCollection.find(
-        { 
-            username: username,
-            _id: new mongo.ObjectID(_id)
-        },
-        {
-            $set: {
-                content: content
-            }
-        },
-        { 
-            multi: true 
-        },
-        done
-    );
-}
-
-exports.deleteAll = function(username, done){
-    g.prototypesCollection.remove({ 'username': username }, done);
-}
-
-exports.delete = function(username, _id, done){
-    g.prototypesCollection.remove({ 'username': username, _id: new mongo.ObjectID(_id) }, done);
+exports.delete = function(creator_id, _id, done){
+    var query = { 'creator_id': new mongo.ObjectID(creator_id), _id: new mongo.ObjectID(_id) };
+    g.prototypesCollection.remove(query, done);
 }
 
 //===========================
