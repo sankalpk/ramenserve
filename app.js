@@ -1,36 +1,62 @@
+/* Initialization
+ * --------------------------------------------------------------------------*/
+var mongo = require('mongodb');
+
+global.mongoConfig = {
+    host: 'localhost',
+    port: mongo.Connection.DEFAULT_PORT,
+    dbName: 'ramen'
+}
+
 var express = require("express");
-var mongoExpressAuth = require('mongo-express-auth');
 var app = express();
+var mongoExpressAuth = require('mongo-express-auth');
+
+var prototypeAPI = require('./prototypeAPI.js');
+
+mongoExpressAuth.init({
+    mongo: { 
+        host: global.mongoConfig.host,
+        port: global.mongoConfig.port,
+        dbName: global.mongoConfig.dbName,
+        collectionName: 'accounts'
+    }
+}, function(){
+    prototypeAPI.init(function(){
+        console.log('ready on port 3000');
+        app.listen(3000);
+    });
+});
+
+// mongoExpressAuth.init({
+//     mongo: { 
+//         dbName: 'ramen',
+//         collectionName: 'accounts'
+//     }
+// }, function(){
+//     console.log('mongo ready!');
+//     app.listen(3000);
+// });
+
 
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'this is supposed to be secret, change it' }));
 
 
-/* Initialization
+/* Routes
  * --------------------------------------------------------------------------*/
-function init(){
-    require('./dataRoutes')(app);
-    require('./loginRoutes')(app);
-    require('./staticRoutes')(app);
+function routes(){
+    require('./loginRoutes')(app, mongoExpressAuth);
+    require('./staticRoutes')(app, mongoExpressAuth);
+    require('./prototypeRoutes')(app, mongoExpressAuth, prototypeAPI);
 }
 
-init();
+routes();
 
 
- /* User Authorization Initialization
+ /* User Authentication and Mongo
  * --------------------------------------------------------------------------*/
-mongoExpressAuth.init({
-    mongo: { 
-        dbName: 'ramen',
-        collectionName: 'accounts'
-    }
-}, function(){
-    console.log('mongo ready!');
-    app.listen(3000);
-});
-
-
 /*var mongo = require('mongodb');
 var host = 'localhost';
 var port = mongo.Connection.DEFAULT_PORT;

@@ -1,6 +1,4 @@
-var mongoExpressAuth = require('mongo-express-auth');
-
-module.exports = function(app){
+module.exports = function(app, mongoExpressAuth){
     app.get('/me', function(req, res){
         mongoExpressAuth.checkLogin(req, res, function(err){
             if (err)
