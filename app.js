@@ -46,13 +46,9 @@ app.use(express.session({ secret: 'this is supposed to be secret, change it' }))
 
 /* Routes
  * --------------------------------------------------------------------------*/
-function routes(){
-    require('./loginRoutes')(app, mongoExpressAuth);
-    require('./staticRoutes')(app, mongoExpressAuth);
-    require('./prototypeRoutes')(app, mongoExpressAuth, prototypeAPI);
-}
-
-routes();
+require('./loginRoutes')(app, mongoExpressAuth);
+require('./staticRoutes')(app, mongoExpressAuth);
+require('./prototypeRoutes')(app, mongoExpressAuth, prototypeAPI);
 
 
  /* User Authentication and Mongo
