@@ -59,7 +59,7 @@ exports.addScreen = function(creator_id, prototype_id, screen_name, done){
     }); 
 }
 
-exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clickableAreas){
+exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clickableAreas, done){
     var query = {creator_id: new mongo.ObjectID(creator__idid), _id: new mongo.ObjectID(prototype_id), 'screens._id': new mongo.ObjectID(screen_id)};
     var action = 
     {
@@ -69,7 +69,7 @@ exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clicka
 
         }
     }
-    g.prototypesCollection.update(query, action, )   
+    g.prototypesCollection.update(query, action, done);   
 }
 
 //deletes a prototypes data (note: does not delete the images from the server

@@ -62,7 +62,7 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
      * clickableAreas are of the form {"x" : <x coord>, "y" : <y coord>, "width" : <width>, "height" : <height>, "destination_screen_id" : <screen_id>} */
      app.put('/prototypes/:_id/setClickableAreas', function(req,res){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.delete(accountInfo._id, req.params._id, makeSendResult(res))
+            prototypeAPI.setClickableAreas(accountInfo._id, req.params._id, screen_id, makeSendResult(res))
         });
 
      });
