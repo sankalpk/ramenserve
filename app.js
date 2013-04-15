@@ -8,6 +8,16 @@ global.mongoConfig = {
     dbName: 'ramen'
 }
 
+
+
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
 var express = require("express");
 var app = express();
 var mongoExpressAuth = require('mongo-express-auth');
@@ -42,6 +52,7 @@ mongoExpressAuth.init({
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'this is supposed to be secret, change it' }));
+app.use(allowCrossDomain);
 
 
 /* Routes
