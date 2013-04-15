@@ -55,8 +55,21 @@ exports.addScreen = function(creator_id, prototype_id, screen_name, done){
     }
     g.prototypesCollection.update(query, partialUpdate, {multi: false, safe: true}, function(err,result){
         if(err) done(err,null, null);
-        else done(null, screen_id, image_path));
+        else done(null, screen_id, image_path);
     }); 
+}
+
+exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clickableAreas){
+    var query = {creator_id: new mongo.ObjectID(creator__idid), _id: new mongo.ObjectID(prototype_id), 'screens._id': new mongo.ObjectID(screen_id)};
+    var action = 
+    {
+        $set: 
+        {
+            'screens.$.clickableAreas': clickableAreas
+
+        }
+    }
+    g.prototypesCollection.update(query, action, )   
 }
 
 //deletes a prototypes data (note: does not delete the images from the server
