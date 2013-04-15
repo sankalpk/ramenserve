@@ -19,6 +19,7 @@ exports.get = function(_id, done){
     g.prototypesCollection.findOne(query, { _id: 1, creator_id:1, last_modified_date:1, screens: 1 }, done);
 }
 
+//creates a new prototype in the mongo with "name" for the creator
 exports.create = function(creator_id, name, done){
     g.prototypesCollection.insert(
         {    
@@ -35,6 +36,30 @@ exports.create = function(creator_id, name, done){
     );
 }
 
+//adds a screen to a given prototype
+exports.addScreen = function(creator_id, prototype_id, screen_name, done){
+    var query = { creator_id: new mongo.ObjectID(creator_id),_id: new mongo.ObjectID(prototype_id)};
+    var screen_id = new mongo.ObjectId();
+    var image_path = "/screens/"+prototype_id+"/"+screen_id.to_s
+    var partialUpdate = 
+    { 
+        $push: 
+        {
+            screens: 
+            { 
+                name: screen_name,
+                image_path: image_path,
+                screen_id: screen_id
+            }
+        } 
+    }
+    g.prototypesCollection.update(query, partialUpdate, {multi: false, safe: true}, function(err,result){
+        if(err) done(err,null, null);
+        else done(null, screen_id, image_path));
+    }); 
+}
+
+//deletes a prototypes data (note: does not delete the images from the server
 exports.delete = function(creator_id, _id, done){
     var query = { 'creator_id': new mongo.ObjectID(creator_id), _id: new mongo.ObjectID(_id) };
     g.prototypesCollection.remove(query, done);

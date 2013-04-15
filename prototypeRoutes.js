@@ -1,4 +1,8 @@
 /* JSON Data */
+
+/* required for image uploads */
+var fs = require("fs");
+
 module.exports = function(app, mongoExpressAuth, prototypeAPI){
     /* returns the creator that is currently logged in's prototypes data */
     app.get('/prototypes', function(req,res){
@@ -38,16 +42,27 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
     /* Step 2
      * Occurs variable number of times for each image upload, first image is start screen for the application
      * creator submits { "screen_name": <name>, "image": <stringdata> }
-     * server returns { "screen_id": <screen_id> } */
-     app.put('/prototypes/:_id/image', function(req, res){
-
+     * server returns { "screen_id": <screen_id>, "image_path": <screen_path relative to host url> } */
+    app.put('/prototypes/:_id/addScreen', function(req, res){
+        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
+            //store the data in mongo
+            prototypeAPI.addScreen(accountInfo._id, req.params._id, req.body.name, function(err, screen_id, image_path){
+                //create a file on the server from the screen data
+                if (err) res.send({ 'err': 'unknown err' });
+                else 
+                {
+                    writeFile(image_path, req.body.image);
+                    res.send({screen_id: screen_id, image_path: image_path});
+                }
+            });
+        });
      });
 
     /* Step 3
      * Occurs once for each screen in the application
      * creator submits { "screen_id": <screen_id>, clickable_areas:[<array of clickable areas>] }
      * clickableAreas are of the form {"x" : <x coord>, "y" : <y coord>, "width" : <width>, "height" : <height>, "destination_screen_id" : <screen_id>} */
-     app.put('/prototypes/:_id/clickables', function(req,res){
+     app.put('/prototypes/:_id/setClickableArea', function(req,res){
 
      })
 }
@@ -80,4 +95,29 @@ function getAccountInfo(mongoExpressAuth, req, res, onSucess){
             });
         }
     });
+}
+
+// Asynchronously read file contents, then call callbackFn
+function readFile(filename, defaultData, callbackFn) {
+  fs.readFile(filename, function(err, data) {
+    if (err) {
+      console.log("Error reading file: ", filename);
+      data = defaultData;
+    } else {
+      console.log("Success reading file: ", filename);
+    }
+    if (callbackFn) callbackFn(err, data);
+  });
+}
+
+// Asynchronously write file contents, then call callbackFn
+function writeFile(filename, data, callbackFn) {
+  fs.writeFile(filename, data, function(err) {
+    if (err) {
+      console.log("Error writing file: ", filename);
+    } else {
+      console.log("Success writing file: ", filename);
+    }
+    if (callbackFn) callbackFn(err);
+  });
 }
