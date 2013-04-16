@@ -60,7 +60,15 @@ exports.addScreen = function(creator_id, prototype_id, screen_name, done){
 }
 
 exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clickableAreas, done){
-    var query = {creator_id: new mongo.ObjectID(creator__id), _id: new mongo.ObjectID(prototype_id), 'screens._id': new mongo.ObjectID(screen_id)};
+    var query = {creator_id: new mongo.ObjectID(creator_id), 
+                _id: new mongo.ObjectID(prototype_id),
+                screens: {
+                    $elemMatch:{
+                        _id: new mongo.ObjectID(screen_id)
+                    }
+                } 
+                //'screens._id': new mongo.ObjectID(screen_id)};
+                }
     var action = 
     {
         $set: 
