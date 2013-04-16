@@ -22,7 +22,7 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
      * logged in for this to occur */
     app.delete('/prototypes/:_id', function(req, res){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.delete(accountInfo._id, req.params._id, makeSendResult(res))
+            prototypeAPI.delete(""+accountInfo._id, req.params._id, makeSendResult(res))
         });
     }); 
 
@@ -35,7 +35,8 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
      * server returns {"_id": id, name: <appname>, "creator_id": <creator_id>, "screens":[empty array] } */
     app.post('/prototypes/init', function(req, res){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.create(accountInfo._id, req.body.name, makeSendResult(res));
+            console.log("Creator id", accountInfo._id);
+            prototypeAPI.create(""+accountInfo._id, req.body.name, makeSendResult(res));
         });
     });
 
@@ -45,10 +46,11 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
      * server returns { "screen_id": <screen_id>, "image_path": <screen_path relative to host url> } */
     app.put('/prototypes/:_id/addScreen', function(req, res){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.addScreen(accountInfo._id, req.params._id, req.body.name, function(err, screen_id, image_path){
+            prototypeAPI.addScreen(""+accountInfo._id, req.params._id, req.body.name, function(err, screen_id, image_path){
                 if (err) res.send({ 'err': 'unknown err' });
                 else 
                 {
+                    console.log("Image Path " + image_path);
                     writeFile(image_path, req.body.image);
                     res.send({screen_id: screen_id, image_path: image_path});
                 }
@@ -62,7 +64,7 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
      * clickableAreas are of the form {"x" : <x coord>, "y" : <y coord>, "width" : <width>, "height" : <height>, "destination_screen_id" : <screen_id>} */
      app.put('/prototypes/:_id/setClickableAreas', function(req,res){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.setClickableAreas(accountInfo._id, req.params._id, screen_id, makeSendResult(res))
+            prototypeAPI.setClickableAreas(""+accountInfo._id, req.params._id, screen_id, makeSendResult(res))
         });
 
      });

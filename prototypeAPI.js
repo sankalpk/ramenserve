@@ -21,10 +21,9 @@ exports.get = function(_id, done){
 
 //creates a new prototype in the mongo with "name" for the creator
 exports.create = function(creator_id, name, done){
-    console.log("created a prototype...");
     g.prototypesCollection.insert(
-        {    
-            creator_id: new mongo.ObjectID(_id),
+        {
+            creator_id: new mongo.ObjectID(creator_id),
             name: name,
             screens: []
         },
@@ -32,16 +31,16 @@ exports.create = function(creator_id, name, done){
             if (err)
                 done(err, null);
             else
-                done(null, result[0]._id);
+                done(null, result[0]);
         }
     );
 }
 
 //adds a screen to a given prototype
 exports.addScreen = function(creator_id, prototype_id, screen_name, done){
-    var query = { creator_id: new mongo.ObjectID(creator_id),_id: new mongo.ObjectID(prototype_id)};
-    var screen_id = new mongo.ObjectId();
-    var image_path = "/screens/"+prototype_id+"/"+screen_id.to_s
+    var query = { creator_id: new mongo.ObjectID(creator_id), _id: new mongo.ObjectID(prototype_id)};
+    var screen_id = new mongo.ObjectID();
+    var image_path = "screens/" + prototype_id + "_" + screen_id;
     var partialUpdate = 
     { 
         $push: 
@@ -61,7 +60,7 @@ exports.addScreen = function(creator_id, prototype_id, screen_name, done){
 }
 
 exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clickableAreas, done){
-    var query = {creator_id: new mongo.ObjectID(creator__idid), _id: new mongo.ObjectID(prototype_id), 'screens._id': new mongo.ObjectID(screen_id)};
+    var query = {creator_id: new mongo.ObjectID(creator__id), _id: new mongo.ObjectID(prototype_id), 'screens._id': new mongo.ObjectID(screen_id)};
     var action = 
     {
         $set: 
