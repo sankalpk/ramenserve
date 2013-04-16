@@ -35,7 +35,6 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
      * server returns {"_id": id, name: <appname>, "creator_id": <creator_id>, "screens":[empty array] } */
     app.post('/prototypes/init', function(req, res){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            console.log("Creator id", accountInfo._id);
             prototypeAPI.create(""+accountInfo._id, req.body.name, makeSendResult(res));
         });
     });
@@ -48,9 +47,7 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI){
         getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
             prototypeAPI.addScreen(""+accountInfo._id, req.params._id, req.body.name, function(err, screen_id, image_path){
                 if (err) res.send({ 'err': 'unknown err' });
-                else 
-                {
-                    console.log("Image Path " + image_path);
+                else {
                     writeFile(image_path, req.body.image);
                     res.send({screen_id: screen_id, image_path: image_path});
                 }
