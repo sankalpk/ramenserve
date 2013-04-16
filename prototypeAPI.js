@@ -64,7 +64,7 @@ exports.setClickableAreas = function(creator_id, prototype_id, screen_id, clicka
                 _id: new mongo.ObjectID(prototype_id),
                 screens: {
                     $elemMatch:{
-                        _id: new mongo.ObjectID(screen_id)
+                        screen_id: new mongo.ObjectID(screen_id)
                     }
                 } 
                 //'screens._id': new mongo.ObjectID(screen_id)};
