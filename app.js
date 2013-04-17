@@ -21,6 +21,7 @@ var app = express();
 var mongoExpressAuth = require('mongo-express-auth');
 
 var prototypeAPI = require('./prototypeAPI.js');
+var taskAPI = require('./taskAPI.js');
 
 mongoExpressAuth.init({
     mongo: { 
@@ -47,3 +48,4 @@ app.use(allowCrossDomain);
 require('./loginRoutes')(app, mongoExpressAuth);
 require('./staticRoutes')(app, mongoExpressAuth);
 require('./prototypeRoutes')(app, mongoExpressAuth, prototypeAPI);
+require('./taskRoutes')(app, mongoExpressAuth, taskAPI);
