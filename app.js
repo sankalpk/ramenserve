@@ -20,8 +20,8 @@ var express = require("express");
 var app = express();
 var mongoExpressAuth = require('mongo-express-auth');
 
-var prototypeAPI = require('./prototypeAPI.js');
 var taskAPI = require('./taskAPI.js');
+var prototypeAPI = require('./prototypeAPI.js');
 
 mongoExpressAuth.init({
     mongo: { 
@@ -32,8 +32,10 @@ mongoExpressAuth.init({
     }
 }, function(){
     prototypeAPI.init(function(){
-        console.log('ready on port 3000');
-        app.listen(3000);
+        taskAPI.init(function(){
+            console.log('ready on port 3000');
+            app.listen(3000);
+        });
     });
 });
 
@@ -48,4 +50,4 @@ app.use(allowCrossDomain);
 require('./loginRoutes')(app, mongoExpressAuth);
 require('./staticRoutes')(app, mongoExpressAuth);
 require('./prototypeRoutes')(app, mongoExpressAuth, prototypeAPI);
-require('./taskRoutes')(app, mongoExpressAuth, taskAPI);
+require('./taskRoutes')(app, mongoExpressAuth, prototypeAPI, taskAPI);
