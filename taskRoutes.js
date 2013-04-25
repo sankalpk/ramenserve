@@ -3,70 +3,19 @@
 /* required for image uploads */
 var fs = require("fs");
 
-module.exports = function(app, mongoExpressAuth, taskAPI){
-    /* returns the creator that is currently logged in's prototypes data */
-    app.get('/prototypes', function(req,res){
-        getAccountInfo(mongoExpressAuth, req, res, function(result){
-            prototypeAPI.getAll(result._id, makeSendResult(res));
-        });
-    });
+module.exports = function(app, mongoExpressAuth, prototypeAPI, taskAPI){
 
-    /* publicly accessible prototype object */
-    app.get('/prototypes/:_id', function(req, res){
+    /* get a task by it's id */
+    app.get('/tasks/:_id', function(req, res){
         var _id = req.params._id;
-        var username = mongoExpressAuth.getUsername(req);
-        prototypeAPI.get(_id, makeSendResult(res));
+        taskAPI.getById(_id, makeSendResult(res));
     });
 
-    /* creator deletes prototype object, note: creator must be 
-     * logged in for this to occur */
-    app.delete('/prototypes/:_id', function(req, res){
-        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.delete(""+accountInfo._id, req.params._id, makeSendResult(res))
-        });
-    }); 
-
-    /* CREATING A PROTOTYPE
-     * This section is split into many parts in line with the user flow */
-
-    /* Step 1
-     * Occurs once in the beginning
-     * creator submits {"name": "<appname>"}
-     * server returns {"_id": id, name: <appname>, "creator_id": <creator_id>, "screens":[empty array] } */
-    app.post('/prototypes/init', function(req, res){
-        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.create(""+accountInfo._id, req.body.name, makeSendResult(res));
-        });
+    /* gets all the tasks for a given prototype */
+    app.get('/tasks/prototype/:prototype_id', function(req,res){
+        var prototype_id = req.params.prototype_id;
+        taskAPI.getByPrototype(prototype_id, makeSendResult(res));
     });
-
-    /* Step 2
-     * Occurs variable number of times for each image upload, first image is start screen for the application
-     * creator submits { "screen_name": <name>, "image": <stringdata> }
-     * server returns { "screen_id": <screen_id>, "image_path": <screen_path relative to host url> } */
-    app.put('/prototypes/:_id/addScreen', function(req, res){
-      console.log(req.body.screen_name);
-
-        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.addScreen(""+accountInfo._id, req.params._id, req.body.screen_name, function(err, screen_id, image_path){
-                if (err) res.send({ 'err': 'unknown err' });
-                else {
-                    writeFile(image_path, req.body.image);
-                    res.send({screen_id: screen_id, image_path: image_path});
-                }
-            });
-        });
-     });
-
-    /* Step 3
-     * Occurs once for each screen in the application
-     * creator submits { "screen_id": <screen_id>, clickable_areas:[<array of clickable areas>] }
-     * clickableAreas are of the form {"x" : <x coord>, "y" : <y coord>, "width" : <width>, "height" : <height>, "destination_id" : <screen_id>} */
-     app.put('/prototypes/:_id/setClickableAreas', function(req,res){
-        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
-            prototypeAPI.setClickableAreas(""+accountInfo._id, req.params._id, req.body.screen_id, req.body.clickable_areas, makeSendResult(res))
-        });
-
-     });
 }
 
 function makeSendResult(res){
