@@ -16,6 +16,29 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI, taskAPI){
         var prototype_id = req.params.prototype_id;
         taskAPI.getByPrototype(prototype_id, makeSendResult(res));
     });
+
+    /* Creates a new task 
+       creator submits {prototype_id: <id>, name: <name>, description: <desc>, start_screen_id: <id>,end_screen_id:<id>}
+       server returns {creator_id: <id>, prototype_id: <id>, name: <name>, description: <desc>, start_screen_id: <id>,end_screen_id:<id>, analytics: {taps: [], num_people: 0,average_time: 0, q1_average: 0, q2_average: 0, q3_average: 0, q4_average: 0, q5_average: 0}}*/ 
+
+    app.post('/tasks', function (req, res){
+        getAccountInfo(mongoExpressAuth, req, res, function(accountInfo){
+            var task = req.body;
+            //sets creator_id according to whoever is logged in
+            task.creator_id = ""+accountInfo._id;
+            taskAPI.create(task, makeSendResult(res));
+        });
+    });
+
+
+    /* Update analytics with an array of taps, time (in seconds), and questionairre results(0-5) */
+    app.put('/tasks/:_id/analytics', function (req,res){
+        var a = req.body;
+        taskAPI.updateAnalytics(a._id, a.taps, a.time, a.q1, a.q2, a.q3, a.q4, a.q5, makeSendResult(res));
+    });
+
+
+
 }
 
 function makeSendResult(res){
