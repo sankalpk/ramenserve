@@ -15,15 +15,15 @@ module.exports = function(app){
 	    response.sendfile("static/" + request.params.staticFilename);
 	});
 
-	app.get("/css/:staticFilename", function (request, response) {
+	app.get("/static/css/:staticFilename", function (request, response) {
 	    response.sendfile("static/css/" + request.params.staticFilename);
 	});
 
-	app.get("/js/:staticFilename", function (request, response) {
+	app.get("/static/js/:staticFilename", function (request, response) {
 	    response.sendfile("static/js/" + request.params.staticFilename);
 	});
 
-	app.get("/img/:staticFilename", function (request, response) {
+	app.get("/static/img/:staticFilename", function (request, response) {
 	    response.sendfile("static/img/" + request.params.staticFilename);
 	});
 }
