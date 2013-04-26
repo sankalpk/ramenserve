@@ -16,7 +16,8 @@ exports.getAll = function(creator_id, done){
 //gets a prototype by _id
 exports.get = function(_id, done){
     var query = { _id : new mongo.ObjectID(_id)};
-    g.prototypesCollection.findOne(query, { _id: 1, creator_id:1, last_modified_date:1, screens: 1 }, done);
+    g.prototypesCollection.findOne(query, { }, done);
+    //_id: 1, creator_id:1, last_modified_date:1, screens: 1 
 }
 
 //creates a new prototype in the mongo with "name" for the creator
