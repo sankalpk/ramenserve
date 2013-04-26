@@ -31,14 +31,12 @@ module.exports = function(app, mongoExpressAuth, prototypeAPI, taskAPI){
     });
 
 
-    /* Update analytics with an array of taps, time (in seconds), and questionairre results(0-5) */
+    /* Update analytics with an array of taps, time (in seconds), and questionairre results(0-5)
+       creator submits {_id:<task_id>,taps:<[array of taps]>,time:<int in seconds>,q1: <q1 likert int>...to q5}*/
     app.put('/tasks/:_id/analytics', function (req,res){
         var a = req.body;
         taskAPI.updateAnalytics(a._id, a.taps, a.time, a.q1, a.q2, a.q3, a.q4, a.q5, makeSendResult(res));
     });
-
-
-
 }
 
 function makeSendResult(res){
