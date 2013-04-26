@@ -1,11 +1,11 @@
 /* Static Files */ 
 
 module.exports = function(app){
-	app.get('/prototypes/view/:id', function(req,res){
-
+	app.get('/prototypes/view/:id', function(request,response){
+		response.sendfile("static/prototypeView.html");
 	});
 
-	app.get('/tasks/view/:id', function(req,res){
+	app.get('/tasks/view/:id', function(request,response){
 
 	});
 
