@@ -20,7 +20,7 @@ function getPrototype(id){
     type: "get",
     url: "/prototypes/"+id,
     success: function(data) {
-      console.log(data);
+      prototype = data;
     }
   });
 }
