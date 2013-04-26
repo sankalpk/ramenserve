@@ -8,7 +8,7 @@ window.addEventListener('load', function(){
 
         var g = {
             onLoginSuccess: function(){
-                window.location = '/';
+                //window.location = '';
             },
             onRegisterSuccess: function(){
                 var username = usernameInput.value;

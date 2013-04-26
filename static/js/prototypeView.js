@@ -1,7 +1,6 @@
-/* AJAX */
-console.log("hello");
-
 var prototype;
+
+
 $(document).ready(function(){
 	getPrototype(getPrototypeId());
 });
@@ -21,6 +20,19 @@ function getPrototype(id){
     url: "/prototypes/"+id,
     success: function(data) {
       prototype = data;
+      /* displays first screen */
+      displayScreen(index);
     }
   });
+}
+
+/* Displays the screen from prototype.screens[index] */
+function displayScreen(index){
+	addImageToDom(prototype.screens[0].image_path);
+	/* add clickareas */
+}
+
+function addImageToDom(path){
+	/* clear current image */
+	/* display new image */
 }
