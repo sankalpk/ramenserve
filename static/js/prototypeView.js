@@ -8,6 +8,9 @@ var screen_height = 480;
 var scale_factor_width;
 var scale_factor_height;
 
+// 0 => prototype, 1 => task
+var state;
+
 
 /* Displays the screen from screen id */
 function displayScreen(screen_id){
@@ -84,10 +87,10 @@ function addClickareas(screen){
 
 /* AJAX */
 /* get the prototype from the server*/
-function getPrototype(id, onSuccess){
+function getPrototype(_id, onSuccess){
 	$.ajax({
 		type: "get",
-		url: "/prototypes/"+id,
+		url: "/prototypes/"+_id,
 		success: function(data) {
 		  prototype = data;
 		  createIdToIndex();
@@ -96,22 +99,39 @@ function getPrototype(id, onSuccess){
 	});
 }
 
-/* gets the prototype data from the server */
+/* gets the image data from the server */
 function getImageData(path, onSuccess){
 	$.ajax({
-    type: "get",
-    url: "/"+path,
-    success: function(data) {
-      if(onSuccess) onSuccess(data);
-    }
-  });
+	    type: "get",
+	    url: "/"+path,
+	    success: function(data) {
+	    	if(onSuccess) onSuccess(data);
+	    }
+	});
+}
+
+/* gets the task data from the server */
+function getTask(_id, onSuccess){
+	$.ajax({
+	    type: "get",
+	    url: "/tasks/"+_id,
+	    success: function(data) {
+	    	if(onSuccess) onSuccess(data);
+	    }
+	});
+}
+
+/* sets state based on url, prototype => 0, task => 1 */
+function setState(){
+	var path = window.location.pathname;
+	if(path.indexOf("prototypes")!==-1)
+		state = 0;
+	else
+		state = 1;
 }
 
 /* Initialization */
 $(document).ready(function(){
-	/* get prototype data from the server the display first screen */
-	getPrototype(getPrototypeId(),displayFirstScreen);
-
 
 	/* set variables */
     screenImg = new Image();
@@ -125,4 +145,18 @@ $(document).ready(function(){
 	canvas.width = screen_width;
 	canvas.height = screen_height;
 	canvas.addEventListener("touchend", onTouchEnd);
+
+	setState();
+	if(state === 0) docInitPrototype();
+	else if(state === 1) docInitTask();
+	//getPrototype(getPrototypeId(),displayFirstScreen);
 });
+
+function docInitPrototype(){
+	/* get prototype data from the server the display first screen */
+	getPrototype(getPrototypeId(),displayFirstScreen);
+}
+
+function docInitTask(){
+	console.log("task");
+}
