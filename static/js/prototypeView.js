@@ -24,7 +24,6 @@ function displayFirstScreen(){
 /* ---------------------------------------------------------*/
 /* Secondary methods */
 function onTouchEnd(event){
-	console.log(prototype);
 	curr_screen.clickableAreas.forEach(function(clickarea){
 		if(isOnClickarea(event,clickarea)){
 			displayScreen(clickarea.destination_id);
