@@ -116,8 +116,8 @@ $(document).ready(function(){
 	/* set variables */
     screenImg = new Image();
     screenImg.onload = onImageLoad;
-    screen_width = $(window).width();
-    screen_height = $(window).height();
+    screen_width = 320;//$(window).width();
+    screen_height = 480;//$(window).height();
 
 	/* set the canvas width and height according to the phone size */
 	canvas = document.getElementById("application");

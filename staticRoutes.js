@@ -7,7 +7,7 @@ module.exports = function(app){
 	});
 
 	app.get('/tasks/view/:id', function(request,response){
-
+		response.sendfile("static/prototypeView.html")
 	});
 
 	app.get("/screens/:staticFilename", function (request, response) {
