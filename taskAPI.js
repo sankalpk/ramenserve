@@ -32,7 +32,7 @@ exports.create = function(task, done){
             name: task.name,
             description: task.description,
             start_screen_id: new mongo.ObjectID(task.start_screen_id),
-            end_screen_id: new mogo.ObjectID(task.end_screen_id),
+            end_screen_id: new mongo.ObjectID(task.end_screen_id),
             analytics: {"taps": [],"num_people": 0, "average_time": 0, "q1_average": 0, "q2_average": 0, "q3_average": 0,"q4_average": 0,"q5_average": 0 }
         },
         function(err,result)
