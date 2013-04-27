@@ -64,7 +64,7 @@ function addClickarea(clickarea){
 	var height = clickarea.height*scale_factor_height;
 	context.fillStyle = "rgba(245,252,18,.9)";
 	context.fillRect(x,y,width,height);
-		console.log("added clickarea");
+	console.log("added clickarea");
 
 }
 
