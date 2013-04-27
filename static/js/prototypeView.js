@@ -1,4 +1,5 @@
 var prototype;
+var curr_screen;
 var canvas, context;
 var screenImg;
 var idToIndex=new Object();
@@ -7,13 +8,12 @@ var screen_height = 480;
 var scale_factor_width;
 var scale_factor_height;
 
+
 /* Displays the screen from screen id */
 function displayScreen(screen_id){
 	var index = idToIndex[screen_id];
-	var image_path = prototype.screens[index].image_path;
-
-	getImageData(image_path, addImageToDom);
-	addClickareas(prototype.screens[index]);
+	curr_screen = prototype.screens[index];
+	getImageData(curr_screen.image_path, addImageToDom);
 }
 
 function displayFirstScreen(){
@@ -21,10 +21,36 @@ function displayFirstScreen(){
 }
 
 
-
-
 /* ---------------------------------------------------------*/
 /* Secondary methods */
+function onTouchEnd(event){
+	console.log(prototype);
+	curr_screen.clickableAreas.forEach(function(clickarea){
+		if(isOnClickarea(event,clickarea)){
+			displayScreen(clickarea.destination_id);
+		} 
+	});
+}
+
+function isOnClickarea(event,clickarea){
+	var touch = event.changedTouches[0];
+	var ev_x = touch.pageX - canvas.offsetLeft;
+	var ev_y = touch.pageY - canvas.offsetTop;
+	var ca_x = clickarea.x*scale_factor_width;
+	var ca_y = clickarea.y*scale_factor_height;
+	var ca_width = clickarea.width*scale_factor_width;
+	var ca_height = clickarea.height*scale_factor_height;
+
+	context.fillStyle = "white";
+	context.fillRect(ca_x,ca_y,ca_width,ca_height);
+
+	//if tap is inside clickarea
+	if(ev_x>=ca_x&&ev_x<=(ca_x+ca_width)&&ev_y>=ca_y&&ev_y<=(ca_y+ca_height)){
+		return true;
+	}
+	else return false;
+
+}
 
 /* gets the prototype id from the current url */
 function getPrototypeId(){
@@ -55,17 +81,6 @@ function addClickareas(screen){
 	screen.clickableAreas.forEach(function(clickarea){
 		addClickarea(clickarea);
 	});
-}
-
-function addClickarea(clickarea){
-	var x = clickarea.x*scale_factor_width;
-	var y = clickarea.y*scale_factor_height;
-	var width = clickarea.width*scale_factor_width;
-	var height = clickarea.height*scale_factor_height;
-	context.fillStyle = "rgba(245,252,18,.9)";
-	context.fillRect(x,y,width,height);
-	console.log("added clickarea");
-
 }
 
 /* AJAX */
@@ -108,4 +123,5 @@ $(document).ready(function(){
 	context = canvas.getContext("2d");
 	canvas.width = screen_width;
 	canvas.height = screen_height;
+	canvas.addEventListener("touchend", onTouchEnd);
 });
