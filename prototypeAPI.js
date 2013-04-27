@@ -10,7 +10,7 @@ exports.init = function(done){
 //gets all the prototypes for the creator's _id
 exports.getAll = function(creator_id, done){
     var query = { creator_id: creator_id };
-    g.prototypesCollection.find(query, {_id: 1, creator_id: 1, screens: 1}).toArray(done);
+    g.prototypesCollection.find(query, {_id: 1, creator_id: 1, name: 1, screens: 1}).toArray(done);
 }
 
 //gets a prototype by _id
@@ -22,6 +22,7 @@ exports.get = function(_id, done){
 
 //creates a new prototype in the mongo with "name" for the creator
 exports.create = function(creator_id, name, done){
+    console.log(name);
     g.prototypesCollection.insert(
         {
             creator_id: new mongo.ObjectID(creator_id),
