@@ -7,6 +7,7 @@ var screen_width = 320;
 var screen_height = 480;
 var scale_factor_width;
 var scale_factor_height;
+var task;
 
 // 0 => prototype, 1 => task
 var state;
@@ -14,15 +15,34 @@ var state;
 
 /* Displays the screen from screen id */
 function displayScreen(screen_id){
-	var index = idToIndex[screen_id];
-	curr_screen = prototype.screens[index];
-	getImageData(curr_screen.image_path, addImageToDom);
+	/* If you're in a task and you've successfully completed it */
+	if(state===1 && screen_id ==task.end_screen_id) 
+		taskCompleted();
+	else
+	{
+		displayStep(0);
+		var index = idToIndex[screen_id];
+		curr_screen = prototype.screens[index];
+		getImageData(curr_screen.image_path, addImageToDom);
+	}
 }
 
-function displayFirstScreen(){
+function taskCompleted(){
+	//show  task completed screen
+	displayStep(3);
+}
+
+function displayFirstPrototypeScreen(){
 	displayScreen(prototype.screens[0].screen_id);
 }
 
+function displayTaskStartScreen(){
+	displayScreen(task.start_screen_id);
+}
+
+function displayQuestionnaire(){
+
+}
 
 /* ---------------------------------------------------------*/
 /* Secondary methods */
@@ -30,10 +50,11 @@ function onTouchEnd(event){
 	curr_screen.clickableAreas.forEach(function(clickarea){
 		if(isOnClickarea(event,clickarea)){
 			displayScreen(clickarea.destination_id);
-		} 
+		}
 	});
 }
 
+/* takes in the non-scaled clickarea and scales it */
 function isOnClickarea(event,clickarea){
 	var touch = event.changedTouches[0];
 	var ev_x = touch.pageX - canvas.offsetLeft;
@@ -43,7 +64,7 @@ function isOnClickarea(event,clickarea){
 	var ca_width = clickarea.width*scale_factor_width;
 	var ca_height = clickarea.height*scale_factor_height;
 
-	context.fillStyle = "white";
+	context.fillStyle = "rgba(186, 227, 224, .25)";
 	context.fillRect(ca_x,ca_y,ca_width,ca_height);
 
 	//if tap is inside clickarea
@@ -51,11 +72,18 @@ function isOnClickarea(event,clickarea){
 		return true;
 	}
 	else return false;
-
 }
 
 /* gets the prototype id from the current url */
 function getPrototypeId(){
+	var path = window.location.pathname;
+	var index = path.lastIndexOf("/");
+	var id = path.slice(index+1);
+	return id;
+}
+
+/* gets the task id from the current url */
+function getTaskId(){
 	var path = window.location.pathname;
 	var index = path.lastIndexOf("/");
 	var id = path.slice(index+1);
@@ -68,6 +96,15 @@ function createIdToIndex(){
 	});
 }
 
+function displayTaskInstructions(){
+	displayStep(1);
+	console.log("Task: ", task);
+	var name = task.name;
+	var description = task.description;
+	$("#1 .headline h1").html(name);
+	$("#1 .description").append("<p>"+description+"</p>");
+}
+
 
 function addImageToDom(data){
     screenImg.src = data.imageData;
@@ -77,12 +114,6 @@ function onImageLoad(){
 	scale_factor_width = screen_width/this.width;
 	scale_factor_height = screen_height/this.height;
 	context.drawImage(this,0,0, screen_width,screen_height);
-}
-
-function addClickareas(screen){
-	screen.clickableAreas.forEach(function(clickarea){
-		addClickarea(clickarea);
-	});
 }
 
 /* AJAX */
@@ -116,7 +147,8 @@ function getTask(_id, onSuccess){
 	    type: "get",
 	    url: "/tasks/"+_id,
 	    success: function(data) {
-	    	if(onSuccess) onSuccess(data);
+	    	task=data;
+	    	getPrototype(data.prototype_id, onSuccess);
 	    }
 	});
 }
@@ -132,6 +164,7 @@ function setState(){
 
 /* Initialization */
 $(document).ready(function(){
+	displayStep(2);
 
 	/* set variables */
     screenImg = new Image();
@@ -153,10 +186,11 @@ $(document).ready(function(){
 });
 
 function docInitPrototype(){
-	/* get prototype data from the server the display first screen */
-	getPrototype(getPrototypeId(),displayFirstScreen);
+	/* get prototype data from the server then display first screen */
+	getPrototype(getPrototypeId(),displayFirstPrototypeScreen);
 }
 
 function docInitTask(){
-	console.log("task");
+	/* get task data from the server, then display first screen */
+	getTask(getTaskId(), displayTaskInstructions);
 }

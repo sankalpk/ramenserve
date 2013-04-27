@@ -2,23 +2,56 @@
 <html lang = "en">
 <head>
 	<title>Ramen</title>
-	<link rel="stylesheet" href="/static/css/reset.css">
 	<link rel="stylesheet" href="/static/css/style.css">
 	<script type="text/javascript" src="/static/js/setup.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
 	<script type="text/javascript" src="/static/js/prototypeView.js"></script>
+	<script type="text/javascript" src="/static/js/stepper.js"></script>
 </head>
 <body>
-	<canvas id = "application" style="border:1px solid black;"></application>
+    <!-- [0] Canvas To Display Prototype 
+    ========================================================================-->
+	<div id="0" class="step">
+		<canvas id = "application" style="border:1px solid black;"></application>
+	</div>
+
+	 <!-- [1] Task Instruction 
+    ========================================================================-->
 	<div id="1" class="step">
+        <div class="nav-container">
+            <div class="nav"></div>
+        </div>
+        <div class="nav-spacer-1"></div>
         <div class="headline">
             <h1></h1>
         </div>
         <div class="description">
-            <p>Your job is to complete the task below. Note: Your actions will be recorded.</p>
+            <p>Your job is to complete the task below.</p>
         </div>
         <div class="instruction-nav">
-            <button class="btn" onclick="showTask();">Next</button>
+            <button class="btn" onclick="displayTaskStartScreen();">Next</button>
+        </div>
+    </div>
+   	<!-- [2] Initial Div 
+    ========================================================================-->
+    <div id="2" class="step">
+    </div>
+
+    <!-- [3] Task Completed 
+    ========================================================================-->
+	<div id="3" class="step">
+        <div class="nav-container">
+            <div class="nav"></div>
+        </div>
+        <div class="nav-spacer-1"></div>
+        <div class="headline">
+            <h1>Congratulations</h1>
+        </div>
+        <div class="description">
+            <p>You have successfully completed the given task.</p>
+        </div>
+        <div class="instruction-nav">
+            <button class="btn" onclick="displayQuestionnaire();">Next</button>
         </div>
     </div>
 </body>
