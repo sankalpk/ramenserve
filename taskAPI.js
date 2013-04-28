@@ -49,17 +49,18 @@ exports.create = function(task, done){
 exports.updateAnalytics = function(_id, taps, time,q1,q2,q3,q4,q5, done)
 {
     //gets the given task
-    getById(_id, function(err, result)
+    exports.getById(_id, function(err, result)
     {
         if (err)
             done(err);
         else
-            computeAndSetAnalytics(result, taps,time,q1,q2,q3,q4,q5,done);    
+            computeAndSetAnalytics(result, taps,parseFloat(time),parseFloat(q1),parseFloat(q2),parseFloat(q3),parseFloat(q4),parseFloat(q5),done);   
     });
 }
 
 computeAndSetAnalytics = function(task, taps,time,q1,q2,q3,q4,q5,done)
 {
+    //resetAnalytics(task, taps,time,q1,q2,q3,q4,q5,done);
     var analytics = task.analytics;
     var new_num_people = analytics.num_people+1;
     task.analytics.taps = analytics.taps.concat(taps);
@@ -73,18 +74,32 @@ computeAndSetAnalytics = function(task, taps,time,q1,q2,q3,q4,q5,done)
     setAnalytics(task,done);
 }
 
+resetAnalytics = function(task, taps,time,q1,q2,q3,q4,q5,done)
+{
+    var analytics = task.analytics;
+    task.analytics.taps = [];
+    task.analytics.average_time = 0;
+    task.analytics.q1_average = 0;
+    task.analytics.q2_average = 0;
+    task.analytics.q3_average = 0;
+    task.analytics.q4_average = 0;
+    task.analytics.q5_average = 0;
+    task.analytics.num_people = 0;
+    setAnalytics(task,done);
+}
+
 setAnalytics = function (task, done)
 {
-    var query = {id: task._id};
+    var query = {_id: task._id};
     var update = { $set: { analytics: task.analytics } };
     var options = {multi: false, safe: true};
-    var callback = function(err,result)
+    var onSuccess = function(err,result)
     {
         if(err)
             done(err)
         else done(null, result);
     }
-    g.tasksCollection.update(query, update, options, callback);
+    g.tasksCollection.update(query, update, onSuccess);
 }
 
 

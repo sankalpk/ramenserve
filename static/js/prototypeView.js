@@ -8,6 +8,7 @@ var screen_height = 480;
 var scale_factor_width;
 var scale_factor_height;
 var task;
+var taskAnalytics;
 
 // 0 => prototype, 1 => task
 var state;
@@ -29,6 +30,9 @@ function displayScreen(screen_id){
 
 function taskCompleted(){
 	//show  task completed screen
+	taskAnalytics.end_time = new Date();
+	taskAnalytics.time = Math.round((taskAnalytics.end_time-taskAnalytics.start_time)/1000);
+	console.log("Time completed: ",taskAnalytics.time);
 	displayStep(3);
 }
 
@@ -37,21 +41,37 @@ function displayFirstPrototypeScreen(){
 }
 
 function displayTaskStartScreen(){
+	taskAnalytics.start_time = new Date();
 	displayScreen(task.start_screen_id);
 }
 
 function displayQuestionnaire(){
+	displayStep(4);
+}
 
+function displayThankYou(){
+	console.log(taskAnalytics);
+	displayStep(5);
 }
 
 /* ---------------------------------------------------------*/
 /* Secondary methods */
 function onTouchEnd(event){
+	//if doing a task, record the tap in analytics
+	if(state==1) recordTap(event);
+	//go through each clickarea to see whether it was tapped on
 	curr_screen.clickableAreas.forEach(function(clickarea){
 		if(isOnClickarea(event,clickarea)){
 			displayScreen(clickarea.destination_id);
 		}
 	});
+}
+
+function recordTap(event){
+	var touch = event.changedTouches[0];
+	var ev_x = (touch.pageX - canvas.offsetLeft)/scale_factor_width;
+	var ev_y = (touch.pageY - canvas.offsetTop)/scale_factor_height;
+	taskAnalytics.taps.push({screen_id: curr_screen.screen_id, x: ev_x,y: ev_y});
 }
 
 /* takes in the non-scaled clickarea and scales it */
@@ -153,6 +173,19 @@ function getTask(_id, onSuccess){
 	});
 }
 
+/* send analytics data */
+function sendAnalytics(analytics,onSuccess){
+    $.ajax({
+        type: "put",
+        data: analytics,
+        url: RAMEN_PATH.server + "/tasks/analytics",
+        success: function(data){
+          console.log("uploaded analytics to the server");
+          if(onSuccess) onSuccess(data);
+        } 
+    });
+}
+
 /* sets state based on url, prototype => 0, task => 1 */
 function setState(){
 	var path = window.location.pathname;
@@ -162,10 +195,32 @@ function setState(){
 		state = 1;
 }
 
+/* Form */
+
+function updateSlider(slideAmount, sliderAmount) {
+    var sliderDiv = document.getElementById(sliderAmount);
+    if(slideAmount == 1) sliderDiv.innerHTML = "Strongly disagree";
+    else if(slideAmount == 2) sliderDiv.innerHTML = "Disagree";
+    else if(slideAmount == 3) sliderDiv.innerHTML = "Neutral";
+    else if(slideAmount == 4) sliderDiv.innerHTML = "Agree";
+    else if(slideAmount == 5) sliderDiv.innerHTML = "Strongly Agree";
+}
+
+function submitAnalytics(){
+	addQuestionDataToAnalytics();
+	sendAnalytics(taskAnalytics);
+}
+
+function addQuestionDataToAnalytics(){
+	taskAnalytics.q1 = $("#q1").val();
+	taskAnalytics.q2 = $("#q2").val();
+	taskAnalytics.q3 = $("#q3").val();
+	taskAnalytics.q4 = $("#q4").val();
+	taskAnalytics.q5 = $("#q5").val();
+}
 /* Initialization */
 $(document).ready(function(){
 	displayStep(2);
-
 	/* set variables */
     screenImg = new Image();
     screenImg.onload = onImageLoad;
@@ -182,7 +237,6 @@ $(document).ready(function(){
 	setState();
 	if(state === 0) docInitPrototype();
 	else if(state === 1) docInitTask();
-	//getPrototype(getPrototypeId(),displayFirstScreen);
 });
 
 function docInitPrototype(){
@@ -191,6 +245,9 @@ function docInitPrototype(){
 }
 
 function docInitTask(){
+	taskAnalytics = new Object();
+	taskAnalytics.taps = [];
+	taskAnalytics._id = getTaskId();
 	/* get task data from the server, then display first screen */
-	getTask(getTaskId(), displayTaskInstructions);
+	getTask(taskAnalytics._id, displayTaskInstructions);
 }

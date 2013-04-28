@@ -22,7 +22,6 @@ exports.get = function(_id, done){
 
 //creates a new prototype in the mongo with "name" for the creator
 exports.create = function(creator_id, name, done){
-    console.log(name);
     g.prototypesCollection.insert(
         {
             creator_id: new mongo.ObjectID(creator_id),

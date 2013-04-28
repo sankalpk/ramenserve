@@ -401,6 +401,12 @@ ul#task-list li:first-child{
 
 /* View Task Instructions
  * --------------------------------------------------------------------------*/
-#1 h1{
-  font-size:20px;
+
+.buttonsubmit{
+  width:100%;
+  margin:auto;
+}
+
+#analyticsbutton{
+  margin:auto;
 }
