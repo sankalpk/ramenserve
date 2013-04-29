@@ -16,7 +16,7 @@ exports.getById = function(_id, done){
 
 /*gets all the tasks for a given prototype */
 exports.getByPrototype  = function(prototype_id, done){
-    var query = { prototype_id : new mongo.ObjectID(_id)};
+    var query = { prototype_id : new mongo.ObjectID(prototype_id)};
     var filter = { _id: 1,prototype_id: 1, name: 1, description: 1, start_screen_id: 1, end_screen_id: 1, analytics: 1}
     g.tasksCollection.find(query, filter).toArray(done);
 }
@@ -32,7 +32,7 @@ exports.create = function(task, done){
             name: task.name,
             description: task.description,
             start_screen_id: new mongo.ObjectID(task.start_screen_id),
-            end_screen_id: new mogo.ObjectID(task.end_screen_id),
+            end_screen_id: new mongo.ObjectID(task.end_screen_id),
             analytics: {"taps": [],"num_people": 0, "average_time": 0, "q1_average": 0, "q2_average": 0, "q3_average": 0,"q4_average": 0,"q5_average": 0 }
         },
         function(err,result)

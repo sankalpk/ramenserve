@@ -8,7 +8,7 @@ window.addEventListener('load', function(){
 
         var g = {
             onLoginSuccess: function(){
-                //window.location = '';
+                displayScreen("2");
             },
             onRegisterSuccess: function(){
                 var username = usernameInput.value;
@@ -53,17 +53,22 @@ window.addEventListener('load', function(){
         var usernameInput = document.getElementById('usernameInput');
         var passwordInput = document.getElementById('passwordInput');
 
-        loginButton.onclick = function(){
-            var username = usernameInput.value;
-            var password = passwordInput.value;
+        if(loginButton){
+            loginButton.onclick = function(){
+                var username = usernameInput.value;
+                var password = passwordInput.value;
 
-            login(username, password);
+                login(username, password);
+            }
         }
-        registerButton.onclick = function(){
-            var username = usernameInput.value;
-            var password = passwordInput.value;
 
-            register(username, password);
+        if(registerButton){
+            registerButton.onclick = function(){
+                var username = usernameInput.value;
+                var password = passwordInput.value;
+
+                register(username, password);
+            }
         }
 
         //==================
@@ -114,7 +119,7 @@ window.addEventListener('load', function(){
         function post(url, data, done){
             var request = new XMLHttpRequest();
             var async = true;
-            request.open('post', url, async);
+            request.open('post', RAMEN_PATH.server+url, async);
             request.onload = function(){
                 if (done !== undefined){
                     var res = request.responseText
