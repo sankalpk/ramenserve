@@ -398,3 +398,15 @@ ul#task-list li:first-child{
   margin-top: 10px;
 }
 
+
+/* View Task Instructions
+ * --------------------------------------------------------------------------*/
+
+.buttonsubmit{
+  width:100%;
+  margin:auto;
+}
+
+#analyticsbutton{
+  margin:auto;
+}

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang = "en">
+<head>
+	<title>Ramen</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="/static/css/style.css">
+	<script type="text/javascript" src="/static/js/setup.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/prototypeView.js"></script>
+	<script type="text/javascript" src="/static/js/stepper.js"></script>
+</head>
+<body>
+    <!-- [0] Canvas To Display Prototype 
+    ========================================================================-->
+	<div id="0" class="step">
+		<canvas id = "application" style="border:1px solid black;"></application>
+	</div>
+
+	 <!-- [1] Task Instruction 
+    ========================================================================-->
+	<div id="1" class="step">
+        <div class="headline">
+            <h1></h1>
+        </div>
+        <div class="description">
+            <p>Your job is to complete the task below.</p>
+        </div>
+        <div class="instruction-nav">
+            <button class="btn" onclick="displayTaskStartScreen();">Next</button>
+        </div>
+    </div>
+   	<!-- [2] Initial Div 
+    ========================================================================-->
+    <div id="2" class="step">
+    </div>
+
+    <!-- [3] Task Completed 
+    ========================================================================-->
+	<div id="3" class="step">
+        <div class="headline">
+            <h1>Congratulations</h1>
+        </div>
+        <div class="description">
+            <p>You have successfully completed the given task.</p>
+        </div>
+        <div class="instruction-nav">
+            <button class="btn" onclick="displayQuestionnaire();">Next</button>
+        </div>
+    </div>
+        <!-- [4] Questionnaire 
+    ========================================================================-->
+	<div id="4" class="step">
+        <div class="headline">
+            <h1>Survey</h1>
+        </div>
+        <div class="description">
+			<form id = "questionnaire">
+				<p>The application uses words and phrases I am familiar with.</p>
+				<input id="q1" type="range" min="1" max="5" step="1" value="3" onchange="updateSlider(this.value,'q1sliderAmount')">
+				<div id="q1sliderAmount">Neutral</div>
+
+				<p>The application helps me easily recover from mistakes.</p>
+				<input id="q2" type="range" min="1" max="5" step="1" value="3" onchange="updateSlider(this.value,'q2sliderAmount')">
+				<div id="q2sliderAmount">Neutral</div>
+
+				<p>I understand what the application was doing on each screen.</p>
+				<input id="q3" type="range" min="1" max="5" step="1" value="3" onchange="updateSlider(this.value,'q3sliderAmount')">
+				<div id="q3sliderAmount">Neutral</div>
+
+				<p>The application’s options and functionality were easy to find.</p>
+				<input id="q4" type="range" min="1" max="5" step="1" value="3" onchange="updateSlider(this.value,'q4sliderAmount')">
+				<div id="q4sliderAmount">Neutral</div>
+
+				<p>The application does not contain irrelevant information.</p>
+				<input id="q5" type="range" min="1" max="5" step="1" value="3" onchange="updateSlider(this.value,'q5sliderAmount')">
+				<div id="q5sliderAmount">Neutral</div>
+			</form>
+        </div>
+       	<div class="buttonsubmit">
+          <button id="analyticsbutton" class="btn" onclick="submitAnalytics(); displayThankYou();">Submit</button>
+        </div>
+    </div>
+    	 <!-- [5] Thank You 
+    ========================================================================-->
+	<div id="5" class="step">
+        <div class="nav-container">
+            <div class="nav"></div>
+        </div>
+        <div class="nav-spacer-1"></div>
+        <div class="headline">
+            <h1>Thank you!</h1>
+        </div>
+        <div class="description">
+            <p>We appreciate your feedback. Your responses have been recorded.</p>
+        </div>
+    </div>
+
+</body>
+</html>
