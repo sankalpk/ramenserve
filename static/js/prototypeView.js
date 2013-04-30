@@ -175,6 +175,7 @@ function getTask(_id, onSuccess){
 
 /* send analytics data */
 function sendAnalytics(analytics,onSuccess){
+	console.log("Analytics: ",analytics);
     $.ajax({
         type: "put",
         data: analytics,

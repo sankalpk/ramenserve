@@ -35,8 +35,4 @@ module.exports = function(app){
 	app.get("/static/img/:staticFilename", function (request, response) {
 	    response.sendfile("static/img/" + request.params.staticFilename);
 	});
-
-	app.post("/sendHit", function (request,response){
-		sendHit();
-	});
 }
