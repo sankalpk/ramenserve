@@ -84,8 +84,9 @@ function isOnClickarea(event,clickarea){
 	var ca_width = clickarea.width*scale_factor_width;
 	var ca_height = clickarea.height*scale_factor_height;
 
-	context.fillStyle = "rgba(186, 227, 224, .25)";
-	context.fillRect(ca_x,ca_y,ca_width,ca_height);
+	//code for debugging, filles in boxes
+	// context.fillStyle = "rgba(186, 227, 224, .25)";
+	// context.fillRect(ca_x,ca_y,ca_width,ca_height);
 
 	//if tap is inside clickarea
 	if(ev_x>=ca_x&&ev_x<=(ca_x+ca_width)&&ev_y>=ca_y&&ev_y<=(ca_y+ca_height)){
